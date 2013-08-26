@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>adsf</title>
+<script type="text/javascript" src="jquery-1.6.2.js"></script>
+<script type="text/javascript">
+imgid="images";
+array=["1.jpg","2.jpg","3.jpg","4.jpg"];
+width="100px";
+height="100px";
+time=500;
+
+function f(){
+	var i;
+	for(i=0;i<array.length;i++){
+		$("[src='"+array[i]+"']").hide();
+	}
+}
+
+function gen(){
+	var str="";
+	var i;
+	for(i=0;i<array.length;i++){
+		str+="<img src=\""+array[i]+"\" width=\""+width+"\" height=\""+height+"\" />\n";
+	}
+	$("#"+imgid).html(str);
+}
+
+function g(i){
+	$("[src='"+array[i]+"']").fadeIn(500,function(){
+		$("[src='"+array[i]+"']").fadeOut(500,function(){
+			g((i+1)%array.length);
+		});
+	});
+}
+
+$(document).ready(function(){
+	gen();
+	f();
+	g(0);
+});
+
+</script>
+</head>
+<body>
+<div id="images"></div>
+<br/>
+Images
+<br/>
+jQuery
+</body>
+</html>

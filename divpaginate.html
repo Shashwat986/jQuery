@@ -1,0 +1,200 @@
+<html>
+<head>
+
+<style type="text/css">
+
+div#dv{
+width:400px;
+border-style:solid;
+border-width:2px;
+background:#ffff00;
+}
+div{
+border-style:solid;
+border-width:2px;
+background:#00ffff;
+}
+
+</style>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.js"></script>
+<script type="text/javascript">
+
+/* * * * * * * * * * *\
+ * Pagination Script *
+ * Written by:       *
+ *  Shashwat Chandra *
+ *    Version 1.0    *
+\* * * * * * * * * * */
+
+							// Elements are separated by <!--splittable-->
+
+var page=400;				// The height (in pixels) at which to limit each page
+							// If, at any time no element is able to fit, the div will resize
+								// to the size of exactly one element.
+							// Height should not be defined through CSS for the text div element.
+								// It should be specified here.
+								// If you want to fix the height of the div, un-comment the mentioned lines in the code
+							
+// The div elements are named: "header", "prev", "next", and "dv".
+
+//* * * Code * * *
+
+var arr;					// Stores the text in the div
+var pages=new Array(0);		// Stores the split locations
+var pos;					// Stores the current display location
+$(document).ready(function(){
+	$("#header").hide();		// Hides Next, Prev buttons unless required
+	dodiv();					// Calculates the splits
+	if(pages.length>1){
+		pageOne();					// Initializes page, if split is required.
+	}
+	
+	// The following lines may be un-commented if you want to fix the height of the div element at the specified height
+	
+	$("#dv").css("height",page.toString()+"px");
+	$("#dv").css("overflow","hidden");		// Shall hide part of the element, only if one element's bigger than the height specified.
+	
+	// The above lines may be un-commented if you want to fix the height of the div element at the specified height
+});
+function dodiv()
+{
+	if ($("#dv").height()>page)
+	{
+		var inp=document.getElementById("dv").innerHTML;
+		arr=inp.split("\<!--splittable--\>");
+									// Splits the text in the div
+		var len=arr.length;
+		var i=0;
+		var j=0;
+		while(j<len)
+		{
+			i=pageFit(j);				// Function to find max fit
+			if(i==j)
+				i=j+1;						//* If no element is fitting, take one element *
+			j=i;
+			pages.push(j);				// Inserts max fit into split location array
+		}
+	}
+}
+
+function pageFit(stt)
+{
+	var len=arr.length;
+	for(var i=len;i>=0;i--)
+	{
+		document.getElementById("dv").innerHTML="";
+		for(var j=stt;j<i;j++)
+			document.getElementById("dv").innerHTML+=arr[j];
+		if ($("#dv").height()<page)
+			break;
+	}
+	return i;
+}
+
+function pageOne()
+{
+	$("#next").removeAttr("disabled");
+	$("#header").show();
+	pos=0;
+	document.getElementById("dv").innerHTML="";
+	for(var i=0;i<pages[pos];i++)
+		document.getElementById("dv").innerHTML+=arr[i];
+}
+
+function prev()
+{
+	pos--;
+	if($("#next").attr("disabled"))
+		$("#next").removeAttr("disabled");
+	if(pos==0)
+		$("#prev").attr("disabled","true")
+	document.getElementById("dv").innerHTML="";
+	if(pos>0)
+		for(var i=pages[pos-1];i<pages[pos];i++)
+			document.getElementById("dv").innerHTML+=arr[i];
+	else
+		for(var i=0;i<pages[pos];i++)
+			document.getElementById("dv").innerHTML+=arr[i];
+}
+
+function next()
+{
+	pos++;
+	if($("#prev").attr("disabled"))
+		$("#prev").removeAttr("disabled");
+	if(pos==pages.length-1)
+		$("#next").attr("disabled","true")
+	document.getElementById("dv").innerHTML="";
+	for(var i=pages[pos-1];i<pages[pos];i++)
+		document.getElementById("dv").innerHTML+=arr[i];
+}
+
+</script>
+
+</head>
+<body>
+<table height="100%">
+<tr>
+<td height="100%">
+<div id="header">
+	<button id="prev" disabled="true" onclick="prev()">Previous</button>
+	<button id="next" disabled="true" onclick="next()">Next</button>
+</div>
+<div id="dv">
+(1)Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<br/><br/>
+<!--splittable-->
+(2)Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. 
+<br/><br/>
+<!--splittable-->
+(3)Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.
+<br/><br/>
+<!--splittable-->
+(4)Fusce convallis, mauris imperdiet gravida bibendum, nisl turpis suscipit mauris, sed placerat ipsum urna sed risus. In convallis tellus a mauris. Curabitur non elit ut libero tristique sodales. Mauris a lacus. Donec mattis semper leo. In hac habitasse platea dictumst. Vivamus facilisis diam at odio. Mauris dictum, nisi eget consequat elementum, lacus ligula molestie metus, non feugiat orci magna ac sem. Donec turpis. Donec vitae metus. Morbi tristique neque eu mauris. Quisque gravida ipsum non sapien. Proin turpis lacus, scelerisque vitae, elementum at, lobortis ac, quam. Aliquam dictum eleifend risus. In hac habitasse platea dictumst. Etiam sit amet diam. Suspendisse odio. Suspendisse nunc. In semper bibendum libero.
+<br/><br/>
+<!--splittable-->
+(5)
+Proin nonummy, lacus eget pulvinar lacinia, pede felis dignissim leo, vitae tristique magna lacus sit amet eros. Nullam ornare. Praesent odio ligula, dapibus sed, tincidunt eget, dictum ac, nibh. Nam quis lacus. Nunc eleifend molestie velit. Morbi lobortis quam eu velit. Donec euismod vestibulum massa. Donec non lectus. Aliquam commodo lacus sit amet nulla. Cras dignissim elit et augue. Nullam non diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In hac habitasse platea dictumst. Aenean vestibulum. Sed lobortis elit quis lectus. Nunc sed lacus at augue bibendum dapibus.
+<br/><br/>
+<!--splittable-->
+(6)Aliquam vehicula sem ut pede. Cras purus lectus, egestas eu, vehicula at, imperdiet sed, nibh. Morbi consectetuer luctus felis. Donec vitae nisi. Aliquam tincidunt feugiat elit. Duis sed elit ut turpis ullamcorper feugiat. Praesent pretium, mauris sed fermentum hendrerit, nulla lorem iaculis magna, pulvinar scelerisque urna tellus a justo. Suspendisse pulvinar massa in metus. Duis quis quam. Proin justo. Curabitur ac sapien. Nam erat. Praesent ut quam.
+<br/><br/>
+<!--splittable-->
+(7)Vivamus commodo, augue et laoreet euismod, sem sapien tempor dolor, ac egestas sem ligula quis lacus. Donec vestibulum tortor ac lacus. Sed posuere vestibulum nisl. Curabitur eleifend fermentum justo. Nullam imperdiet. Integer sit amet mauris imperdiet risus sollicitudin rutrum. Ut vitae turpis. Nulla facilisi. Quisque tortor velit, scelerisque et, facilisis vel, tempor sed, urna. Vivamus nulla elit, vestibulum eget, semper et, scelerisque eget, lacus. Pellentesque viverra purus. Quisque elit. Donec ut dolor.
+<br/><br/>
+<!--splittable-->
+(8)Duis volutpat elit et erat. In at nulla at nisl condimentum aliquet. Quisque elementum pharetra lacus. Nunc gravida arcu eget nunc. Nulla iaculis egestas magna. Aliquam erat volutpat. Sed pellentesque orci. Etiam lacus lorem, iaculis sit amet, pharetra quis, imperdiet sit amet, lectus. Integer quis elit ac mi aliquam pretium. Nullam mauris orci, porttitor eget, sollicitudin non, vulputate id, risus. Donec varius enim nec sem. Nam aliquam lacinia enim. Quisque eget lorem eu purus dignissim ultricies. Fusce porttitor hendrerit ante. Mauris urna diam, cursus id, mattis eget, tempus sit amet, risus. Curabitur eu felis. Sed eu mi. Nullam lectus mauris, luctus a, mattis ac, tempus non, leo. Cras mi nulla, rhoncus id, laoreet ut, ultricies id, odio.
+<br/><br/>
+</div>
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<br/><br/>
+<!--splittable-->
+Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. 
+<br/><br/>
+<!--splittable-->
+Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.
+<br/><br/>
+<!--splittable-->
+Fusce convallis, mauris imperdiet gravida bibendum, nisl turpis suscipit mauris, sed placerat ipsum urna sed risus. In convallis tellus a mauris. Curabitur non elit ut libero tristique sodales. Mauris a lacus. Donec mattis semper leo. In hac habitasse platea dictumst. Vivamus facilisis diam at odio. Mauris dictum, nisi eget consequat elementum, lacus ligula molestie metus, non feugiat orci magna ac sem. Donec turpis. Donec vitae metus. Morbi tristique neque eu mauris. Quisque gravida ipsum non sapien. Proin turpis lacus, scelerisque vitae, elementum at, lobortis ac, quam. Aliquam dictum eleifend risus. In hac habitasse platea dictumst. Etiam sit amet diam. Suspendisse odio. Suspendisse nunc. In semper bibendum libero.
+<br/><br/>
+<!--splittable-->
+Proin nonummy, lacus eget pulvinar lacinia, pede felis dignissim leo, vitae tristique magna lacus sit amet eros. Nullam ornare. Praesent odio ligula, dapibus sed, tincidunt eget, dictum ac, nibh. Nam quis lacus. Nunc eleifend molestie velit. Morbi lobortis quam eu velit. Donec euismod vestibulum massa. Donec non lectus. Aliquam commodo lacus sit amet nulla. Cras dignissim elit et augue. Nullam non diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In hac habitasse platea dictumst. Aenean vestibulum. Sed lobortis elit quis lectus. Nunc sed lacus at augue bibendum dapibus.
+<br/><br/>
+<!--splittable-->
+Aliquam vehicula sem ut pede. Cras purus lectus, egestas eu, vehicula at, imperdiet sed, nibh. Morbi consectetuer luctus felis. Donec vitae nisi. Aliquam tincidunt feugiat elit. Duis sed elit ut turpis ullamcorper feugiat. Praesent pretium, mauris sed fermentum hendrerit, nulla lorem iaculis magna, pulvinar scelerisque urna tellus a justo. Suspendisse pulvinar massa in metus. Duis quis quam. Proin justo. Curabitur ac sapien. Nam erat. Praesent ut quam.
+<br/><br/>
+<!--splittable-->
+Vivamus commodo, augue et laoreet euismod, sem sapien tempor dolor, ac egestas sem ligula quis lacus. Donec vestibulum tortor ac lacus. Sed posuere vestibulum nisl. Curabitur eleifend fermentum justo. Nullam imperdiet. Integer sit amet mauris imperdiet risus sollicitudin rutrum. Ut vitae turpis. Nulla facilisi. Quisque tortor velit, scelerisque et, facilisis vel, tempor sed, urna. Vivamus nulla elit, vestibulum eget, semper et, scelerisque eget, lacus. Pellentesque viverra purus. Quisque elit. Donec ut dolor.
+<br/><br/>
+<!--splittable-->
+Duis volutpat elit et erat. In at nulla at nisl condimentum aliquet. Quisque elementum pharetra lacus. Nunc gravida arcu eget nunc. Nulla iaculis egestas magna. Aliquam erat volutpat. Sed pellentesque orci. Etiam lacus lorem, iaculis sit amet, pharetra quis, imperdiet sit amet, lectus. Integer quis elit ac mi aliquam pretium. Nullam mauris orci, porttitor eget, sollicitudin non, vulputate id, risus. Donec varius enim nec sem. Nam aliquam lacinia enim. Quisque eget lorem eu purus dignissim ultricies. Fusce porttitor hendrerit ante. Mauris urna diam, cursus id, mattis eget, tempus sit amet, risus. Curabitur eu felis. Sed eu mi. Nullam lectus mauris, luctus a, mattis ac, tempus non, leo. Cras mi nulla, rhoncus id, laoreet ut, ultricies id, odio.
+<br/><br/>
+</td>
+<td valign="top">
+<div style="height:400px;">
+The height specified, for comparison's sake
+</div>
+</td>
+</body>
+</html>

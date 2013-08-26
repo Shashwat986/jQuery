@@ -1,0 +1,29 @@
+<html>
+<head>
+	<title>Drawing using jQuery</title>
+	<script type="text/javascript" src="jquery-1.6.2.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		var k=0;
+		$("#obj").click(function (e) {
+			$("#dloc").html("("+e.pageX+","+e.pageY+")");
+			if(k==0)
+				k=1;
+			else
+				k=0;
+		});
+		$(document).mousemove(function (e) {
+			$("#mloc").html("("+e.pageX+","+e.pageY+")");
+			if(k==1){
+				$("#obj").css({"position":"absolute","left":(e.pageX-20)+"px","top":(e.pageY-20)+"px"});
+			}
+		});
+	});
+	</script>
+</head>
+<body>
+	<div id="dloc">LClick</div>
+	<div id="mloc">Move</div>
+	<img id="obj" src="http://www.w3schools.com/images/tryitimg.gif" width="40px" height="40px"/>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery-1.6.2.js"></script>
+<style type="text/css">
+.news{
+	width:220px;
+
+	background:#d6974a;
+}
+.head{
+	background:#ffc06d;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.headon{
+	background:#ffd090;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+#lolp{
+	list-style:none;
+
+}
+</style>
+<script type="text/javascript">
+//*****************************************//
+//***** Shashwat's Code for News Feed *****//
+//*****          Version 1.1          *****//
+//*****     Made in jQuery 1.6.2      *****//
+//*****         from scratch          *****//
+//*****************************************//
+
+var max=4;									// Decides how many news items show at a time
+var time=2000;								// Time in milliseconds for it to automatically scroll. Set to 0 for no auto-scrolling
+var heads=["Heading1",
+		   "Heading2",
+		   "Heading3",
+		   "Heading4",
+		   "Heading5",
+		   "Heading6",
+		   "Heading7",
+		   "Heading8"];						// The headings of the news items
+
+var body=["1Body1 Body 1Bod y1Body 1B ody1Bod y1Bo dy1",
+		  "2Body2 Body 2Bod y2Body 2B ody2Bod y2Bo dy2",
+		  "3Body3 Body 3Bod y3Body 3B ody3Bod y3Bo dy3",
+		  "4Body4 Body 4Bod y4Body 4B ody4Bod y4Bo dy4",
+		  "5Body5 Body 5Bod y5Body 5B ody5Bod y5Bo dy5",
+		  "6Body6 Body 6Bod y6Body 6B ody6Bod y6Bo dy6",
+		  "7Body7 Body 7Bod y7Body 7B ody7Bod y7Bo dy7",
+		  "8Body8 Body 8Bod y8Body 8B ody8Bod y8Bo dy8"];			// The body in the news items
+											// Note: The length of heads[] and body[] MUST be the same
+
+//*****************************************//
+//*****       Your Job is done!       *****//
+//*****    The Rest is for coders!    *****//
+//*****************************************//
+
+var max1=max-1;
+var timer=0;
+var t;
+
+function gen(){								// Generator function. Writes the HTML code for the newsfeed
+	var str="";
+	var i;
+	str+="<ul id='lolp'>";
+	for(i=0;i<heads.length;i++){
+		str+="<li class='head' id='lol"+i+"'>"+heads[i];		// LI elements contain individual news items
+		str+="<br/>";
+		str+="<div class='news' id='blol"+i+"'>"+body[i]+"</div>";
+		str+="</li>";
+	}
+	if(heads.length>max)										// If there are more items than can be shown at one time, adds more, less buttons
+		str+="<button id='buttonP'>Prev</button><button id='buttonN'>Next</button>";
+	str+="</ul>";
+	$("#lol").html(str);
+	for(i=max;i<heads.length;i++)
+		$("#lol"+i).hide();
+}
+function hidedata()
+{
+	for(var i=0;i<heads.length;i++){							// Hides the body tags so only the headings are visible
+		$("#blol"+i).hide();
+	}
+	if(heads.length>max){										// Disables the LESS button at the start
+		$("#buttonP").attr("disabled", "disabled");
+	}
+}
+
+function timebased()
+{
+	if(time<=0)
+		return;
+	if(!document.getElementById('buttonN').disabled)
+		document.getElementById('buttonN').click();
+	else
+		for(var i=0;i<heads.length-max;i++)
+			document.getElementById('buttonP').click();
+}
+		
+var t=-1;
+var flag=0;
+$(document).ready(function(){
+	var k=0;													// Marks the position of the news scroll. k=0 implies the start of the scroll
+	gen();
+	hidedata();
+	if(t==-1)
+		t=window.setInterval("timebased()",time);
+	//--------THE MORE BUTTON-------
+	$("#buttonN").click(function(){
+		var i=0;
+		$("#lol"+k).slideUp(400);
+		k++;
+		k=k%heads.length;
+		$("#lol"+(k+max1)%heads.length).slideDown(400);
+		if((k+max1)%heads.length==(heads.length-1))
+			$("#buttonN").attr("disabled", "disabled");
+		if(k%heads.length==1)
+			$("#buttonP").removeAttr("disabled");
+	});
+	//--------THE LESS BUTTON-------
+	$("#buttonP").click(function(){
+		var i=0;
+		$("#lol"+(k+max1)%heads.length).slideUp(400);
+		k--;
+		k=k%heads.length;
+		$("#lol"+k).slideDown(400);
+		if(k%heads.length==0)
+			$("#buttonP").attr("disabled", "disabled");
+		if((k+max1)%heads.length==heads.length-2)
+			$("#buttonN").removeAttr("disabled");
+	});
+	//------------------------------
+	//--------CODE FOR CLICK--------
+	$('ul').click(function(e) {
+		if ( $(e.target).is('li') ) {									// If a list item is clicked
+			for(var i=k;i<k+max;i++)										// this.childNodes == array of LIs
+				if(e.target!=this.childNodes[i%heads.length])					// Hide other visible headings but this
+					$(this.childNodes[i%heads.length]).slideToggle(400);
+			$(e.target.childNodes[2]).slideToggle(400,function(){
+				if (!(e.target.childNodes[2].style["display"]=="none")){		// If it's opened the body
+					flag=1;
+					clearInterval(t);
+					t=-1;
+					$("#buttonP").attr("disabled", "disabled");
+					$("#buttonN").attr("disabled", "disabled");
+				}
+				else{															// If it's closed the body
+					flag=0;
+					if(t==-1)
+						t=window.setInterval("timebased()",time);
+					if(!((k+max1)%heads.length==(heads.length-1)))					// The buttons
+						$("#buttonN").removeAttr("disabled");
+					if(!(k%heads.length==0))
+						$("#buttonP").removeAttr("disabled");
+				}
+			});			// Slide the infobar of the clicked LI (childNodes[2] = <div>) (childNodes[0]=text, [1]=<br>)			
+		}
+	});
+	//------------------------------
+	//---MOUSE-OVER COLOR CHANGER---
+	$('.head').mouseenter(function(){
+		clearInterval(t);
+		t=-1;
+		$(this).attr("class","headon");
+	});
+	$('.head').mouseleave(function(){
+		if(flag==0 && t==-1)
+			t=window.setInterval("timebased()",time);
+		$(this).attr("class","head");
+	});
+	//------------------------------
+	$('#lolp').mouseenter(function(){
+		clearInterval(t);
+		t=-1;
+	});
+	$('#lolp').mouseleave(function(){
+		if(flag==0 && t==-1)
+			t=window.setInterval("timebased()",time);
+	});
+	//------------------------------
+});
+</script>
+</head>
+<body style="background:#759537;">
+<div style="background:#d6974a;width:300px;" id="lol">This is a paragraph.</div>
+<p id="note"></p>
+</body>
+</html>

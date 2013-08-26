@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>Self-Open test</title>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.js"></script>
+<script type="text/javascript">
+var time=200
+max=200
+min=50
+$(document).ready(function(){
+	var flag=0;									//Needs to close
+	var bflag=0;								//Closing has started
+	p1=min+(max-min)/3
+	p2=min+2*(max-min)/3
+	$(".c1").css("width",$(document).width()/5+"px");
+	$(".c1").css("height",min+"px");
+	$(document).mousemove(function(e){
+		if(e.pageX<$(document).width()/5 && bflag==0 && $(".c1").css("height")!=max+"px"){
+			$(".c1").css("height",p1+"px");
+			window.setTimeout(function(){
+				$(".c1").css("height",p2+"px");
+				window.setTimeout(function(){
+					$(".c1").css("height",max+"px");
+				},time);
+			},time);
+			$("#lol").html(e.pageX+","+e.pageY);
+			flag=1;
+		}
+		if(e.pageX>=$(document).width()/5 && flag==1 && bflag==0){
+			bflag=1;
+			$(".c1").css("height",p2+"px");
+			window.setTimeout(function(){
+				$(".c1").css("height",p1+"px");
+				window.setTimeout(function(){
+					$(".c1").css("height",min+"px");
+					flag=0;
+					bflag=0;
+				},time);
+			},time);
+		}
+	});
+});
+</script>
+<style type="text/css">
+.c1{
+	height:50px;
+	width:150px;
+	background-color:#ff0000;
+	color:#00ff00;
+	overflow:hidden;
+}
+</style>
+</head>
+<body>
+<div class="c1">
+<ul>
+<li>Header1</li>
+<li>Header2</li>
+<li>Header3</li>
+<li>Header4</li>
+<li>Header5</li>
+</ul>
+</div>
+<div id="lol">:</div>
+</body>
+</html>
